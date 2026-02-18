@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HMM Weather Model</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+    <h1>Hidden Markov Model - Weather Example</h1>
+
+    <form method="POST">
+        <label>Enter Observations (space separated):</label><br>
+        <input type="text" name="observations" placeholder="Walk Shop Clean" required>
+        <br><br>
+        <button type="submit">Run HMM</button>
+    </form>
+
+    {% if result %}
+    <div class="results">
+        <h2>Original Start Probabilities</h2>
+        <pre>{{ result.original_start }}</pre>
+
+        <h2>Trained Start Probabilities</h2>
+        <pre>{{ result.new_start }}</pre>
+
+        <h2>Original Transition Matrix</h2>
+        <pre>{{ result.original_trans }}</pre>
+
+        <h2>Trained Transition Matrix</h2>
+        <pre>{{ result.new_trans }}</pre>
+
+        <h2>Original Emission Matrix</h2>
+        <pre>{{ result.original_emit }}</pre>
+
+        <h2>Trained Emission Matrix</h2>
+        <pre>{{ result.new_emit }}</pre>
+    </div>
+{% endif %}
+
+
+
+</body>
+</html>
