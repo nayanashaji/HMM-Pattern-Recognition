@@ -14,117 +14,59 @@
     <h1>Hidden Markov Model – Weather Example</h1>
 
     <form method="POST">
-        <input type="text" name="observations" placeholder="Walk Shop Clean" required>
-        <button type="submit">Train & Decode</button>
+        <input type="text" name="observations" placeholder="walk shop clean walk" required>
+        <input type="number" name="states" placeholder="Number of hidden states" required>
+        <button type="submit">Train HMM</button>
     </form>
+
 
     {% if result %}
 
-    <!-- Observation vs Hidden -->
-    <div class="card">
-        <h2>Observation vs Hidden State (After Training)</h2>
-        <table class="aligned-table">
+<div class="card">
+    <h2>Final P(O | λ)</h2>
+    <p>{{ result.likelihood }}</p>
+</div>
+
+<div class="card">
+    <h2>Initial Distribution π</h2>
+    {% for val in result.pi %}
+        <p>{{ "%.4f"|format(val) }}</p>
+    {% endfor %}
+</div>
+
+<div class="card">
+    <h2>Transition Matrix A</h2>
+    <table>
+        {% for row in result.A %}
             <tr>
-                {% for obs in result.obs_sequence %}
-                    <th>{{ obs }}</th>
+                {% for val in row %}
+                    <td>{{ "%.4f"|format(val) }}</td>
                 {% endfor %}
             </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="card">
+    <h2>Emission Matrix B</h2>
+    <table>
+        {% for row in result.B %}
             <tr>
-                {% for state in result.best_path %}
-                    <td>{{ state }}</td>
+                {% for val in row %}
+                    <td>{{ "%.4f"|format(val) }}</td>
                 {% endfor %}
             </tr>
-        </table>
-        <p class="small">Path Probability: {{ result.viterbi_prob }}</p>
-    </div>
+        {% endfor %}
+    </table>
+</div>
 
-    <!-- Start Probabilities -->
-    <div class="card grid">
-        <div>
-            <h3>Original Start</h3>
-            {% for state, value in result.original_start.items() %}
-                <p>{{ state }}: {{ "%.4f"|format(value) }}</p>
-            {% endfor %}
-        </div>
-        <div>
-            <h3>Trained Start</h3>
-            {% for state, value in result.new_start.items() %}
-                <p>{{ state }}: {{ "%.4f"|format(value) }}</p>
-            {% endfor %}
-        </div>
-    </div>
+<div class="card">
+    <h2>Likelihood Over Iterations</h2>
+    <img src="{{ url_for('static', filename='likelihood.png') }}">
+</div>
 
-    <!-- Transition Matrices -->
-    <div class="card grid">
-        <div>
-            <h3>Original Transition Matrix</h3>
-            <table>
-                {% for s1, row in result.original_trans.items() %}
-                    <tr>
-                        <th>{{ s1 }}</th>
-                        {% for s2, val in row.items() %}
-                            <td>{{ "%.4f"|format(val) }}</td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            </table>
-        </div>
-        <div>
-            <h3>Trained Transition Matrix</h3>
-            <table>
-                {% for s1, row in result.new_trans.items() %}
-                    <tr>
-                        <th>{{ s1 }}</th>
-                        {% for s2, val in row.items() %}
-                            <td>{{ "%.4f"|format(val) }}</td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            </table>
-        </div>
-    </div>
+{% endif %}
 
-    <!-- Emission Matrices -->
-    <div class="card grid">
-        <div>
-            <h3>Original Emission Matrix</h3>
-            <table>
-                {% for s1, row in result.original_emit.items() %}
-                    <tr>
-                        <th>{{ s1 }}</th>
-                        {% for obs, val in row.items() %}
-                            <td>{{ "%.4f"|format(val) }}</td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            </table>
-        </div>
-        <div>
-            <h3>Trained Emission Matrix</h3>
-            <table>
-                {% for s1, row in result.new_emit.items() %}
-                    <tr>
-                        <th>{{ s1 }}</th>
-                        {% for obs, val in row.items() %}
-                            <td>{{ "%.4f"|format(val) }}</td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            </table>
-        </div>
-    </div>
-
-    <!-- Explanation -->
-    <div class="card">
-        <h2>How the Model Updated</h2>
-        <ul>
-            {% for line in result.explanation_details %}
-                <li>{{ line }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    {% endif %}
 
 </body>
 </html>
