@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 from hmm import baum_welch
+import networkx as nx
+
 
 app = Flask(__name__)
 
@@ -34,6 +36,29 @@ def index():
         plt.title("Likelihood over Iterations")
         plt.tight_layout()
         plt.savefig("static/likelihood.png")
+        plt.close()
+
+        # ----- Create State Transition Diagram -----
+        G = nx.DiGraph()
+
+        states = [f"S{i}" for i in range(len(pi))]
+
+        for i in range(len(pi)):
+            for j in range(len(pi)):
+                prob = round(A[i][j], 3)
+                if prob > 0.001:  # avoid clutter
+                    G.add_edge(states[i], states[j], weight=prob)
+
+        plt.figure(figsize=(6, 6))
+        pos = nx.circular_layout(G)
+
+        nx.draw(G, pos, with_labels=True, node_size=3000, node_color="lightblue", font_size=10)
+        labels = nx.get_edge_attributes(G, 'weight')
+        nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
+
+        plt.title("State Transition Diagram")
+        plt.tight_layout()
+        plt.savefig("static/state_diagram.png")
         plt.close()
 
         result = {
