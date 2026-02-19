@@ -46,7 +46,7 @@ def baum_welch(obs_seq, N, M, iterations=20):
 
     likelihoods = []
 
-    for _ in range(iterations):
+    for j in range(iterations):
 
         alpha, likelihood = forward(obs_seq, A, B, pi)
         beta = backward(obs_seq, A, B)
@@ -86,6 +86,9 @@ def baum_welch(obs_seq, N, M, iterations=20):
                 mask = (obs_seq == k)
                 B[i, k] = np.sum(gamma[mask, i]) / np.sum(gamma[:, i])
 
-        likelihoods.append(likelihood)
+        likelihoods.append(np.log(likelihood + 1e-12))
+        if j > 1 and abs(likelihoods[-1] - likelihoods[-2]) < 1e-4:
+            break
+
 
     return pi, A, B, likelihoods
