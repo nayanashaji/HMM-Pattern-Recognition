@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import os
 from hmm import baum_welch
 import networkx as nx
+import matplotlib
 matplotlib.use('Agg') 
 
 
